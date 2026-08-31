@@ -1,0 +1,9 @@
+interface:
+  display_name: "Photo to Print Poem"
+  short_description: "把照片转成暖白留白与手工颗粒质感的极简诗意版画"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#B4513E"
+  default_prompt: "使用 $photo-to-print-poem 把我上传的照片转换成留白感强的诗意版画。"
+policy:
+  allow_implicit_invocation: true
