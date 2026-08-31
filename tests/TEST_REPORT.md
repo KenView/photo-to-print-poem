@@ -2,11 +2,11 @@
 
 测试日期：2026-08-31  
 执行环境：Codex 内置图像生成工具  
-Skill 路径：`photo-to-print-poem/`
+安装 Skill：`photo-to-print-poem/`
 
 ## 结论
 
-规范校验和四项真实图片测试全部通过。所有生成结果均为 1086 × 1448 像素（3:4），没有进行失败重试。
+格式校验、6 组原图/效果图 Demo 和 1 项多图角色隔离测试均通过。6 张主效果图均为约 3:4 的竖版页面。
 
 ## 规范校验
 
@@ -14,93 +14,54 @@ Skill 路径：`photo-to-print-poem/`
 | --- | --- |
 | `quick_validate.py` | 通过：`Skill is valid!` |
 | `agents/openai.yaml` YAML 解析 | 通过 |
+| `assets/icon.svg` XML/SVG 解析 | 通过 |
 | 必需文件与相对资源路径 | 通过 |
 | 自动调用策略 | 保持启用 |
 
-## 测试素材
+## 摄影素材来源
 
-测试只使用 Wikimedia Commons 上许可信息明确的公共领域摄影作品。
-
-| 类型 | 作品与作者 | 许可 | 原作页面 | 本地文件 |
+| Demo | 类型 | 作品与作者 | 许可 | 原作页面 |
 | --- | --- | --- | --- | --- |
-| 人像 | *Portrait photograph of an unidentified woman*，Arnold Genthe | Public domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Portrait_photograph_of_an_unidentified_woman_LOC_agc.7a10272.jpg) | `source-images/portrait.jpg` |
-| 街景 | *Street scene (...), 1918*，National Photo Company Collection | Public domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Street_scene_%28...%29,_1918_LCCN2016827087.jpg) | `source-images/street.jpg` |
-| 风景 | *Private lake*，Prindleman | Public domain，作者主动释出 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Private_lake.jpg) | `source-images/landscape.jpg` |
+| 1 | 人像 | *Portrait photograph of an unidentified woman*，Arnold Genthe | Public domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Portrait_photograph_of_an_unidentified_woman_LOC_agc.7a10272.jpg) |
+| 2 | 街景 | *Street scene (...), 1918*，National Photo Company Collection | Public domain | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Street_scene_%28...%29,_1918_LCCN2016827087.jpg) |
+| 3 | 风景 | *Private lake*，Prindleman | Public domain，作者主动释出 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Private_lake.jpg) |
+| 4 | 静物 | *Still life fruit*，Jon Sullivan | Public domain，作者主动释出 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Still_life_fruit.jpg) |
+| 5 | 建筑 | *Door albayzin granada*，Jebulon | Public domain，作者主动释出 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Door_albayzin_granada.jpg) |
+| 6 | 船景 | *A close up picture of boat on water*，Mills Tamara / U.S. Fish and Wildlife Service | Public domain，美国联邦政府作品 | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:A_close_up_picture_of_boat_on_water.jpg) |
 
-## 测试 1：人像身份与姿态保持
+## 6 组 Demo 验收
 
-用户级请求：
+| Demo | 主要约束 | 验收结果 | 结论 |
+| --- | --- | --- | --- |
+| 1 人像 | 身份、侧脸、帽子、卷发、肩部轮廓；无文字 | 关键特征可辨，留白与颗粒成立，无额外物件 | 通过 |
+| 2 街景 | 路灯、人群、建筑透视；精确英文 | 空间关系保留；`the city moves in soft ink.` 逐字准确 | 通过 |
+| 3 山湖 | 湖面、V 形山谷、山峰、树带、前景石块 | 大结构与蓝灰强调色成立，无新增主体 | 通过 |
+| 4 静物 | 铜色滤篮、红色油桃、黄色香蕉；无文字 | 器物轮廓和水果组合保留，红黄强调色受控 | 通过 |
+| 5 建筑 | 双开门、四块面板、圆窗；精确中文 | 对称关系保留；`门外，风很轻。` 逐字准确 | 通过 |
+| 6 船景 | 船体、驾驶舱、栏杆、倒影、雾山；无文字 | 首次结果有伪文字；一次定向修正后全部清除，其余结构保持 | 通过 |
 
-> 保留人物帽子、侧脸、卷发和肩部轮廓，留白更多，不要文字，输出 3:4。
+## Demo 文件对应关系
 
-验收结果：
+| Demo | 原图 | 效果图 |
+| --- | --- | --- |
+| 1 | `source-images/portrait.jpg` | `results/portrait-result.png` |
+| 2 | `source-images/street.jpg` | `results/street-result.png` |
+| 3 | `source-images/landscape.jpg` | `results/landscape-result.png` |
+| 4 | `source-images/still-life.jpg` | `results/still-life-result.png` |
+| 5 | `source-images/architecture.jpg` | `results/architecture-result.png` |
+| 6 | `source-images/boat.jpg` | `results/boat-result.png` |
 
-- 同一人物的侧向头部、帽子、卷发和暗色肩部轮廓可辨认。
-- 暖白纸张、颗粒、缺墨与有限色板成立。
-- 留白明显，无文字、水印、边框或额外物件。
+## 多图角色隔离附加测试
 
-结果：**通过**
+输入角色：Image 1 为人像目标图；Image 2 为山湖色彩和情绪参考，只允许使用蓝灰、松绿和花岗岩灰。
 
-![人像测试结果](results/portrait-result.png)
+结果中人物身份、姿态、帽子与轮廓得到保留，参考图只影响色板，没有出现山、湖、树或岩石。结论：**通过**。
 
-## 测试 2：复杂街景简化与精确文字
+![目标图与风格参考隔离结果](results/multi-image-role-result.png)
 
-用户级请求：
+## 测试原则
 
-> 保留左侧路灯、中央人群和建筑透视，使用砖红强调色，底部加入小字 “the city moves in soft ink.”。
-
-验收结果：
-
-- 路灯、人群层次和建筑窗格透视得到保留。
-- 密集人物被简化为印刷块面，但仍保持原有街流关系。
-- 指定英文完整、大小写和句号准确，无额外字符。
-- 画面没有 mockup、拼图或新增车辆。
-
-结果：**通过**
-
-![街景测试结果](results/street-result.png)
-
-## 测试 3：风景大结构与强调色
-
-用户级请求：
-
-> 保留蓝灰湖面、V 形山谷、花岗岩山峰、远岸松树和前景石块，不要文字。
-
-验收结果：
-
-- 湖面、山谷、山峰、树带和前景石块的空间关系可辨认。
-- 湖面成为唯一强蓝灰强调色，其余颜色受控。
-- 纸张、颗粒、印刷边缘与顶部呼吸区成立。
-- 没有新增人物、船、建筑或装饰符号。
-
-结果：**通过**
-
-![风景测试结果](results/landscape-result.png)
-
-## 测试 4：目标图与风格参考图隔离
-
-输入角色：
-
-- Image 1：人像目标图。
-- Image 2：风景色彩与安静氛围参考，只允许使用蓝灰、松绿、花岗岩灰和情绪。
-
-验收结果：
-
-- 最终主体仍是 Image 1 中的人物，身份、姿态、帽子与轮廓得到保留。
-- Image 2 只影响色板和氛围。
-- 没有把山、湖、树或岩石复制进人像画面。
-
-结果：**通过**
-
-![多图角色隔离测试结果](results/multi-image-role-result.png)
-
-## 总体判断
-
-Skill 已满足以下关键目标：
-
-- 可安装格式规范。
-- 能实际调用图像工具，而非只返回提示词。
-- 能保留人像、城市和风景的关键结构。
-- 用户关于比例、文字、留白与强调色的覆盖指令有效。
-- 多图场景中可明确区分目标图和风格参考图。
-- 对关键失败最多进行一次针对性重试，避免无边界生成。
+- 每张主 Demo 使用一次独立的内置图像生成调用。
+- 发现关键约束失败时，只做一次针对性修正并重复必须保留项。
+- 不把视觉偏好写成对所有用户请求的硬性要求。
+- 验收关注可观察结果：主体和空间关系、风格转换、有限色板、留白、文字准确性和额外元素。

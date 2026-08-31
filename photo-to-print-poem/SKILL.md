@@ -1,6 +1,7 @@
 ---
 name: photo-to-print-poem
 description: 将用户提供的照片转化为暖白纸张、有限色板和手工印刷颗粒感的极简诗意版画，并按需加入短句。适用于照片版画化、risograph、monoprint、诗集或独立杂志插画；不用于普通照片增强、写实修复或仅添加滤镜。
+license: MIT
 ---
 
 # Photo to Print Poem
